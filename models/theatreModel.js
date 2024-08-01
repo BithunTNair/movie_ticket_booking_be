@@ -10,6 +10,9 @@ const theatreSchema = mongoose.Schema({
     movie: {
         type: mongoose.Types.ObjectId,
         ref: 'movies'
+    },
+    seats:{
+        type:Array
     }
 });
 
