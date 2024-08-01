@@ -6,10 +6,14 @@ const uploadMiddleware = require('../middlewares/upload-middleware')
 const addMovie = async (req, res) => {
     try {
         console.log('hitted');
+        console.log(process.env.CLOUDINARY_NAME);
+        console.log(process.env.CLOUDINARY_API_KEY);
+        console.log(process.env.CLOUDINARY_SECRETE_KEY);
+        console.log(typeof process.env.CLOUDINARY_API_KEY)
         if (!req.file) {
             return res.send('file is not visible')
         }
-        const img = await cloudinaryInstance.uploader.upload(req.file.path, async(err, result) => {
+        const img = await cloudinaryInstance.uploader.upload(req.file.path, async (err, result) => {
             if (err) {
                 console.log(err);
                 res.status(500).json({ message: 'something went wrong' })

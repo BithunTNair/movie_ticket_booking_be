@@ -29,6 +29,14 @@ const userSchema= mongoose.Schema({
         // users  3,
         // theatre owners 2,
         // admin 1
+    },
+    createdOn:{
+        type:Date,
+        default:new Date()
+    },
+    active:{
+        type:Boolean,
+        default:true
     }
 });
 
