@@ -12,7 +12,7 @@ const movieSchema= mongoose.Schema({
     genre:{
         type:String
     },
-    cast:{
+    director:{
         type:String 
     },
     poster:{

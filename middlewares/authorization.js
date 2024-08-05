@@ -8,7 +8,7 @@ const adminAuth = (req, res, next) => {
             console.log(decodedToken);
             if (!err && decodedToken && decodedToken._doc.role === 1) {
                 req.userId = decodedToken._doc._id
-                req.userRole = decodedToken._doc._role
+                req.userRole = decodedToken._doc.role
                 next()
             } else {
                 res.status(401).json({ message: 'unauthorized admin' })
