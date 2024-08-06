@@ -3,9 +3,7 @@ const jwt = require('jsonwebtoken')
 const adminAuth = (req, res, next) => {
     try {
         const token = req.cookies.token
-        console.log(token);
         jwt.verify(token, process.env.SECRETE_KEY, (err, decodedToken) => {
-            console.log(decodedToken);
             if (!err && decodedToken && decodedToken._doc.role === 1) {
                 req.userId = decodedToken._doc._id
                 req.userRole = decodedToken._doc.role
@@ -25,9 +23,7 @@ const adminAuth = (req, res, next) => {
 const userAuth = (req, res, next) => {
     try {
         const token = req.cookies.token
-        console.log(token);
         jwt.verify(token, process.env.SECRETE_KEY, (err, decodedToken) => {
-            console.log(decodedToken);
             if (decodedToken || !err) {
                 req.userId = decodedToken._doc._id
                 req.userRole = decodedToken._doc._role

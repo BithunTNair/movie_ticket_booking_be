@@ -1,22 +1,24 @@
 const MOVIES = require('../models/moviesModel');
-const THEATRES=require('../models/theatreModel')
+const THEATRES = require('../models/theatreModel')
+const cloudinary= require('cloudinary').v2
 
-const cloudinaryInstance = require('../config/cloudinary');
-const uploadMiddleware = require('../middlewares/upload-middleware')
-
+const upload = require('../middlewares/upload-middleware');
+ cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_SECRETE_KEY
+ });
 const addMovie = async (req, res) => {
+
     try {
         console.log('hitted');
-        // console.log(process.env.CLOUDINARY_NAME);
-        // console.log(process.env.CLOUDINARY_API_KEY);
-        // console.log(process.env.CLOUDINARY_SECRETE_KEY);
-        // console.log(typeof process.env.CLOUDINARY_API_KEY)
-        // console.log(cloudinaryInstance.config());
         if (!req.file) {
             return res.send('file is not visible')
         }
       
-        const img = await cloudinaryInstance.uploader.upload(req.file.path, async (err, result) => {
+        
+
+        const img = await cloudinary.uploader.upload(req.file.path, async (err, result) => {
             if (err) {
                 console.log(err);
                 res.status(500).json({ message: 'something went wrong' })
@@ -24,32 +26,48 @@ const addMovie = async (req, res) => {
             const imageUrl = result.url
             const { title, description, genre, director, rating } = req.body;
 
-            const newMovies = new MOVIES({
-                title: title,
-                description: description,
-                genre: genre,
-                director: director,
-                rating: rating,
+            MOVIES({
+                title:title,
+                description:description,
+                genre:genre,
+                director:director,
+                rating:rating,
                 poster: imageUrl
-            })
-            const response = await newMovies.save()
-            res.status(200).json({ message: 'movie added successfully', response })
+            }).save()
+            res.status(200).json({ message: 'movie added successfully'})
         })
-        
-      
+
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'something went wrong' })
     }
 };
-const deleteMovie=async(req,res)=>{
+const updateMovie = async (req, res) => {
     try {
-        const {title}=req.body;
-        const movieData= await MOVIES.findOne({title:title});
-        if(!movieData){
-            res.status(401).json({message:"movie is not found"});
-        }else{
-            MOVIES.deleteOne({title:title});
+        const { id } = req.params.id;
+        const movieData = await MOVIES.findbyId({ id: id });
+        if (!movieData) {
+            res.status(401).json({ message: "movie is not found" });
+        } else {
+            const updatedMovie = await MOVIES.findbyIdandUpdate(id, { title, description, genre, director, rating }, { new: true });
+            res.status(200).json({ message: "movie updated successfully", updatedMovie })
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'something went wrong' })
+    }
+}
+
+const deleteMovie = async (req, res) => {
+    try {
+        const { id } = req.params.id
+        const movieData = await MOVIES.findbyId({ id: id });
+        if (!movieData) {
+            res.status(401).json({ message: "movie is not found" });
+        } else {
+            MOVIES.deleteOne({ id: id });
         }
 
     } catch (error) {
@@ -62,19 +80,19 @@ const addshows = () => {
 
 };
 
-const addTheatre = (req,res) => {
+const addTheatre = (req, res) => {
     try {
-        const { name, location,movie } = req.body;
+        const { name, location, movie } = req.body;
 
-      THEATRES({
-            name:name,
-            location:location,
-            movie:movie
-        }).save().then((response)=>{
-            res.status(200).json({message:"Theatre was added successfully",response})
+        THEATRES({
+            name: name,
+            location: location,
+            movie: movie
+        }).save().then((response) => {
+            res.status(200).json({ message: "Theatre was added successfully", response })
         })
     } catch (error) {
-        res.status(500).json({message:"something went wrong"})
+        res.status(500).json({ message: "something went wrong" })
         console.log(error);
 
     }
@@ -86,4 +104,4 @@ const addSeats = () => {
 
 
 
-module.exports = { addMovie, addshows, addTheatre, addSeats ,deleteMovie}
+module.exports = { addMovie, addshows, addTheatre, addSeats, deleteMovie, updateMovie }
