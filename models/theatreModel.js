@@ -1,4 +1,15 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+
+const seatSchema= mongoose.Schema({
+    seatNumber:{
+        type:String,
+        required:true
+    },
+    isBooked:{
+        type:Boolean,
+        default:false
+    }
+});
 
 const theatreSchema = mongoose.Schema({
     name: {
@@ -11,8 +22,10 @@ const theatreSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'movies'
     },
-    seats:{
-        type:Array
+    seats: [seatSchema],
+    createdOn: {
+        type: Date,
+        default: new Date()
     }
 });
 

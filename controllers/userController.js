@@ -39,7 +39,7 @@ const updateReviews = async (req, res) => {
       
         const { review, rating } = req.body;
         const { id } = req.params.id;
-        console.log(id);
+       
         
         const Review = await REVIEWS.findById(id);
         
@@ -48,7 +48,7 @@ const updateReviews = async (req, res) => {
             res.status(404).json({ message: "not found" })
         } else {
             const updatedReview = await REVIEWS.findByIdAndUpdate(id, { review, rating }, { new: true });
-            res.status(200).json({ message: "review added successfully", updatedReview })
+            res.status(200).json({ message: "review updated successfully", updatedReview })
         }
 
     } catch (error) {

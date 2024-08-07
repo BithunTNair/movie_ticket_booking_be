@@ -20,6 +20,10 @@ const movieSchema= mongoose.Schema({
     },
     rating:{
         type:Number
+    },
+    createdOn:{
+        type:Date,
+        default:new Date()
     }
 })
 
