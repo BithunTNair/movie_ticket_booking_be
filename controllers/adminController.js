@@ -34,7 +34,7 @@ const addMovie = async (req, res) => {
                 director: director,
                 rating: rating,
                 poster: imageUrl
-            }).save()
+            }).save();
             res.status(200).json({ message: 'movie added successfully' })
         })
 
@@ -82,9 +82,60 @@ const deleteMovie = async (req, res) => {
     }
 }
 
-const addshows = () => {
+const addshows = async (req, res) => {
+    try {
+        const { theatreId, movieId, showtimeDate } = req.body;
+        if (!mongoose.Types.ObjectId.isValid(theatreId)) {
+            return res.status(404).json({ message: "Invalid theatre ID" });
+        }
+        if (!mongoose.Types.ObjectId.isValid(movieId)) {
+            return res.status(404).json({ message: "Invalid movie ID" });
+        }
+        const theatreData = await THEATRES.findById(theatreId);
+        if (!theatreData) {
+            return res.status(404).json({ message: "theatre not found" });
+        }
+        const movieData = await MOVIES.findById(movieId);
+        if (!movieData) {
+            return res.status(404).json({ message: "movie not found" });
+        }
 
+        const newshowtime = { time: new Date(showtimeDate), movie: movieId };
+        thatreData.showtimes.push(newshowtime);
+        await thatreData.save()
+        res.status(200).json({ message: "shows added successfully" })
+
+
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'something went wrong' })
+    }
 };
+
+const deleteShows = async (req, res) => {
+    try {
+        const { theatreId } = req.body;
+        if (!mongoose.Types.ObjectId.isValid(theatreId)) {
+            return res.status(404).json({ message: "Invalid theatre ID" });
+        }
+        const theatre = await THEATRES.findById(theatreId);
+        if (!theatre) {
+            return res.status(404).json({ message: "theatre not found" });
+        }
+        console.log(theatre);
+        
+
+      await  theatre.showtimes.pull();
+        await theatre.save();
+        return res.status(200).json({ message: "movie shows removed successfully" });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'something went wrong' })
+    }
+}
 const addSeats = (seats) => {
     try {
         const totalSeats = [];
@@ -116,7 +167,7 @@ const addTheatre = async (req, res) => {
                 movie: movie,
                 seats: addSeats(seats)
             }).save()
-           res.status(200).json({ message: "theatre is successfully added" })
+            res.status(200).json({ message: "theatre is successfully added" })
         }
 
 
@@ -131,4 +182,4 @@ const addTheatre = async (req, res) => {
 
 
 
-module.exports = { addMovie, addshows, addTheatre, addSeats, deleteMovie, updateMovie }
+module.exports = { addMovie, addshows, deleteShows, addTheatre, addSeats, deleteMovie, updateMovie }
