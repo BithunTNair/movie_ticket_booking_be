@@ -27,7 +27,7 @@ const addMovie = async (req, res) => {
             const imageUrl = result.url
             const { title, description, genre, director, rating } = req.body;
 
-            MOVIES({
+      const movie=await  MOVIES({
                 title: title,
                 description: description,
                 genre: genre,
@@ -35,7 +35,7 @@ const addMovie = async (req, res) => {
                 rating: rating,
                 poster: imageUrl
             }).save();
-            res.status(200).json({ message: 'movie added successfully' })
+            res.status(200).json({ message: 'movie added successfully',movie })
         })
 
 
@@ -50,13 +50,13 @@ const updateMovie = async (req, res) => {
         const { title, description, genre, director, rating } = req.body
 
         // const { id } = req.params.id;
-        const movieData = await MOVIES.findById('66b397177fd326b1cdd8d49d');
+        const movieData = await MOVIES.findById('66b444b1f07a335f47020599');
         console.log(movieData);
 
         if (!movieData) {
             res.status(401).json({ message: "movie is not found" });
         } else {
-            const updatedMovie = await MOVIES.findByIdAndUpdate('66b397177fd326b1cdd8d49d', { title, description, genre, director, rating }, { new: true });
+            const updatedMovie = await MOVIES.findByIdAndUpdate('66b444b1f07a335f47020599', { title, description, genre, director, rating }, { new: true });
             res.status(200).json({ message: "movie updated successfully", updatedMovie })
         }
 
@@ -101,8 +101,8 @@ const addshows = async (req, res) => {
         }
 
         const newshowtime = { time: new Date(showtimeDate), movie: movieId };
-        thatreData.showtimes.push(newshowtime);
-        await thatreData.save()
+        theatreData.showtimes.push(newshowtime);
+        await theatreData.save()
         res.status(200).json({ message: "shows added successfully" })
 
 
@@ -124,10 +124,9 @@ const deleteShows = async (req, res) => {
         if (!theatre) {
             return res.status(404).json({ message: "theatre not found" });
         }
-        console.log(theatre);
-        
 
-      await  theatre.showtimes.pull();
+
+        theatre.showtimes = []
         await theatre.save();
         return res.status(200).json({ message: "movie shows removed successfully" });
 
@@ -161,13 +160,13 @@ const addTheatre = async (req, res) => {
         if (!movieData) {
             return res.status(404).json({ message: "movie is not found" })
         } else {
-            THEATRES({
+            const theatre = await THEATRES({
                 name: name,
                 location: location,
                 movie: movie,
                 seats: addSeats(seats)
             }).save()
-            res.status(200).json({ message: "theatre is successfully added" })
+            res.status(200).json({ message: "theatre is successfully added", theatre })
         }
 
 
