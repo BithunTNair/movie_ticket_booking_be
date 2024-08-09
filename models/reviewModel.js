@@ -5,10 +5,6 @@ const reviewSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'users'
     },
-    theatre: {
-        type: mongoose.Types.ObjectId,
-        ref: 'theatres'
-    },
     review: {
         type: String,
 

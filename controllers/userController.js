@@ -1,11 +1,34 @@
-const REVIEWS = require('../models/reviewModel')
+const REVIEWS = require('../models/reviewModel');
+const MOVIES = require('../models/moviesModel');
+const THEATRES=require('../models/theatreModel');
 
-const getTheatre = () => {
+const getTheatre = async(req,res) => {
+    try {
+        const theatres = await THEATRES.find();
+        if (!theatres) {
+            res.status(404).json({ message: "theatres are not found" })
+        }
+        res.status(200).json({ theatres: theatres });
 
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "something went wrong" })
+    }
 };
 
-const getMovies = () => {
+const getMovies = async (req, res) => {
+    
+    try {
+        const movies = await MOVIES.find();
+        if (!movies) {
+            res.status(404).json({ message: "movie is not found" })
+        }
+        res.status(200).json({ movies: movies });
 
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "something went wrong" })
+    }
 };
 
 const getSeats = () => {
@@ -37,15 +60,15 @@ const addReviews = (req, res) => {
 const updateReviews = async (req, res) => {
     try {
         console.log('hitted');
-        
-      
+
+
         const { review, rating } = req.body;
         // const { id } = req.params.id;
-       
-        
+
+
         const Review = await REVIEWS.findById('66b48edfb25e900121cd44ef');
-        
-        
+
+
         if (!Review) {
             res.status(404).json({ message: "not found" })
         } else {
@@ -64,17 +87,17 @@ const updateReviews = async (req, res) => {
 const deleteReviews = async (req, res) => {
     try {
         // const { id } = req.params.id;
-        
+
         const Review = await REVIEWS.findById('66b48edfb25e900121cd44ef');
-        
-        
+
+
         if (!Review) {
             res.status(404).json({ message: "not found" })
         } else {
-         const deleteReview =await   REVIEWS.findByIdAndDelete('66b48edfb25e900121cd44ef');
-            res.status(200).json({ message: "review deleted successfully"});
+            const deleteReview = await REVIEWS.findByIdAndDelete('66b48edfb25e900121cd44ef');
+            res.status(200).json({ message: "review deleted successfully" });
             console.log(Review);
-            
+
         }
 
     } catch (error) {
@@ -84,8 +107,18 @@ const deleteReviews = async (req, res) => {
     }
 };
 
-const getReviews = () => {
+const getReviews = async (req, res) => {
+    try {
+        const reviews = await REVIEWS.find();
+        if (!reviews) {
+            res.status(404).json({ message: "review is not found" })
+        }
+        res.status(200).json({ reviews:  reviews });
 
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "something went wrong" })
+    }
 }
 
-module.exports = { getTheatre, getMovies, getSeats, addReviews, updateReviews,deleteReviews,getReviews }
+module.exports = { getTheatre, getMovies, getSeats, addReviews, updateReviews, deleteReviews, getReviews }
