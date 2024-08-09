@@ -31,8 +31,21 @@ const getMovies = async (req, res) => {
     }
 };
 
-const getSeats = () => {
+const getSeats = async(req,res) => {
+try {
+    // const {id}= req.params.id;
 
+    const theatre = await THEATRES.findById('66b3af50deef1bc6a40937ad');
+
+    if (!theatre) {
+      return res.status(404).json({ message: 'Theatre not found' });
+    }
+    const seats= await theatre.seats;
+    res.status(200).json({seats: seats });
+} catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "something went wrong" })
+}
 };
 
 const addReviews = (req, res) => {

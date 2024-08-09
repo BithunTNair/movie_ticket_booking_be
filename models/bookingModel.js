@@ -13,10 +13,23 @@ const bookingSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'users'
     },
-    bookedOn:{
-        type:Date,
-        default:new Date()
-    }
+    orderId: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'confirmed', 'failed'],
+        default: 'pending'
+    },
+    bookedOn: {
+        type: Date,
+        default: new Date()
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
 });
 
 const booking = mongoose.model('booking', bookingSchema);

@@ -6,7 +6,7 @@ var router = express.Router();
 
 router.get('/theatrelist',userAuth,getTheatre );
 router.get('/movielist',userAuth,getMovies );
-router.get('/seats',userAuth,getSeats );
+router.get('/getseats',getSeats );
 router.get('/getreviews',userAuth,getReviews );
 router.post('/addreviews',userAuth,addReviews);
 router.put('/updatereviews',userAuth,updateReviews);
