@@ -19,9 +19,8 @@ const userSchema= mongoose.Schema({
         max:8
     },
     mobileNumber:{
-        type:Number,
+        type:String,
         // unique:true,
-      
     },
     role:{
         type:Number,

@@ -4,7 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose')
-const database = require('./config/db')
+const database = require('./config/db');
+const cors=require('cors');
 const dotenv= require('dotenv');
 dotenv.config()
 
@@ -15,6 +16,11 @@ var adminRouter = require('./routes/adminRoutes');
 
 database()
 var app = express();
+
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
+
 
 
 // view engine setup
