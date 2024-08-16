@@ -23,7 +23,7 @@ const signup = (req, res) => {
 
 
             }).save().then((response) => {
-                res.status(200).json({ message: 'signup successfull', response })
+                res.status(200).json({ message: 'signup successfull'})
             }).catch((error) => {
                 if (error.code === 11000) {
                     console.log(error);

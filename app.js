@@ -18,7 +18,7 @@ database()
 var app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'https://taptickets-fe.onrender.com'
 }));
 
 
