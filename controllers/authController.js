@@ -59,7 +59,7 @@ const signin = async (req, res) => {
                     }
                     const token = jwt.sign({ ...userData }, process.env.SECRETE_KEY, options);
                     res.cookie('token', token)
-                    res.status(200).json({ user: userData })
+                    res.status(200).json({ user: userData ,token})
                 } else {
                     console.log(err);
                     res.status(401).json({ message: 'Invalid credentials' })
