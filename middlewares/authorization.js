@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 const adminAuth = (req, res, next) => {
     try {
-        const token = req.cookies.token
+        const token = req.headers['authorization'].split(' ')[1];  
         jwt.verify(token, process.env.SECRETE_KEY, (err, decodedToken) => {
             if (!err && decodedToken && decodedToken._doc.role === 1) {
                 req.userId = decodedToken._doc._id
@@ -22,16 +22,16 @@ const adminAuth = (req, res, next) => {
 
 const userAuth = (req, res, next) => {
     try {
-        const token = req.cookies.token
+        const token = req.headers['authorization'].split('')[1];
         jwt.verify(token, process.env.SECRETE_KEY, (err, decodedToken) => {
             if (decodedToken || !err) {
                 req.userId = decodedToken._doc._id
                 req.userRole = decodedToken._doc._role
                 next()
-            }else{
+            } else {
                 res.status(401).json({ message: 'unauthorized user' })
             }
-           
+
         })
 
     } catch (error) {
