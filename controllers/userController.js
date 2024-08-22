@@ -17,6 +17,8 @@ const getTheatre = async(req,res) => {
 };
 
 const getMovies = async (req, res) => {
+    console.log('get movie hitted');
+    
     
     try {
         const movies = await MOVIES.find();
