@@ -23,12 +23,15 @@ const signup = (req, res) => {
 
 
             }).save().then((response) => {
-                res.status(200).json({ message: 'signup successfull'})
+                res.status(200).json({ message: 'signup successfull' })
             }).catch((error) => {
-                if (error.code === 11000) {
-                    console.log(error);
-                    
+                console.log(error);
+                
+                if (error.code === 11000 && error.errmsg.includes('email')) {
+
                     res.status(500).json({ message: 'This email id is already exist' })
+                } else if (error.code === 11000 && error.errmsg.includes('mobileNumber')) {
+                    res.status(500).json({ message: 'This mobile number is already exist' })
                 } else {
                     res.status(500).json({ message: 'something went wrong' })
                 }
@@ -59,7 +62,7 @@ const signin = async (req, res) => {
                     }
                     const token = jwt.sign({ ...userData }, process.env.SECRETE_KEY, options);
                     res.cookie('token', token)
-                    res.status(200).json({ user: userData ,token})
+                    res.status(200).json({ user: userData, token })
                 } else {
                     console.log(err);
                     res.status(401).json({ message: 'Invalid credentials' })

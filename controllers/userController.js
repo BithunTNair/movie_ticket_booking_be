@@ -1,8 +1,8 @@
 const REVIEWS = require('../models/reviewModel');
 const MOVIES = require('../models/moviesModel');
-const THEATRES=require('../models/theatreModel');
+const THEATRES = require('../models/theatreModel');
 
-const getTheatre = async(req,res) => {
+const getTheatre = async (req, res) => {
     try {
         const theatres = await THEATRES.find();
         if (!theatres) {
@@ -18,8 +18,8 @@ const getTheatre = async(req,res) => {
 
 const getMovies = async (req, res) => {
     console.log('get movie hitted');
-    
-    
+
+
     try {
         const movies = await MOVIES.find();
         if (!movies) {
@@ -33,21 +33,21 @@ const getMovies = async (req, res) => {
     }
 };
 
-const getSeats = async(req,res) => {
-try {
-    // const {id}= req.params.id;
+const getSeats = async (req, res) => {
 
-    const theatre = await THEATRES.findById('66b3af50deef1bc6a40937ad');
+    try {
+        const { id } = req.params;
+        const theatre = await THEATRES.findById(id);
 
-    if (!theatre) {
-      return res.status(404).json({ message: 'Theatre not found' });
+        if (!theatre) {
+            return res.status(404).json({ message: 'Theatre is not found' });
+        }
+        const seats = await theatre.seats;
+        res.status(200).json({ seats: seats });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "something went wrong" })
     }
-    const seats= await theatre.seats;
-    res.status(200).json({seats: seats });
-} catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "something went wrong" })
-}
 };
 
 const addReviews = (req, res) => {
@@ -128,7 +128,7 @@ const getReviews = async (req, res) => {
         if (!reviews) {
             res.status(404).json({ message: "review is not found" })
         }
-        res.status(200).json({ reviews:  reviews });
+        res.status(200).json({ reviews: reviews });
 
     } catch (error) {
         console.log(error);
