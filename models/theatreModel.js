@@ -3,26 +3,35 @@ const mongoose = require('mongoose');
 const seatSchema = mongoose.Schema({
     seatNumber: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     isBooked: {
         type: Boolean,
-        default: false
+        default: false,
+        index: true
     }
 });
 
 
 const showtimeSchema = mongoose.Schema({
     time: {
-        type:Date,
-        required:true
+        type: Date,
+        required: true,
+        index: true
     },
     movie: {
         type: mongoose.Types.ObjectId,
         ref: 'movies',
-        required:true
+        required: true
+    },
+    seats: [seatSchema],
+    name:{
+        type:String
     }
+
 });
+showtimeSchema.index({ time: 1, movie: 1 });
 
 const theatreSchema = mongoose.Schema({
     name: {

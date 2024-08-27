@@ -7,7 +7,7 @@ var router = express.Router();
 
 router.post('/addmovie', adminAuth, upload, addMovie);
 router.post('/addtheatre', adminAuth, addTheatre);
-router.post('/addshows', adminAuth, addshows);
+router.post('/addshows',adminAuth, addshows);
 router.delete('/deleteshows', adminAuth, deleteShows);
 router.delete('/deletemovie', adminAuth, deleteMovie);
 router.put('/updatemovie', adminAuth, upload, updateMovie);

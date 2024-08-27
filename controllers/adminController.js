@@ -82,14 +82,14 @@ const updateMovie = async (req, res) => {
             }
             const imageUrl = result.url
             const { title, description, genre, director, rating } = req.body;
-            const movieData= await MOVIES.findById('66b4443129aa2e9514d79a0a')
-            
-        if (!movieData) {
-            res.status(401).json({ message: "movie is not found" });
-        } else {
-            const updatedMovie = await MOVIES.findByIdAndUpdate('66b4443129aa2e9514d79a0a', { title, description, genre, director, rating,imageUrl }, { new: true });
-            res.status(200).json({ message: "movie updated successfully",updatedMovie })
-        }
+            const movieData = await MOVIES.findById('66b4443129aa2e9514d79a0a')
+
+            if (!movieData) {
+                res.status(401).json({ message: "movie is not found" });
+            } else {
+                const updatedMovie = await MOVIES.findByIdAndUpdate('66b4443129aa2e9514d79a0a', { title, description, genre, director, rating, imageUrl }, { new: true });
+                res.status(200).json({ message: "movie updated successfully", updatedMovie })
+            }
 
         })
 
@@ -122,7 +122,7 @@ const deleteMovie = async (req, res) => {
 
 const addshows = async (req, res) => {
     try {
-        const { theatreId, movieId, showtimeDate } = req.body;
+        const { theatreId, movieId, showtimeDate, seats, name } = req.body;
         if (!mongoose.Types.ObjectId.isValid(theatreId)) {
             return res.status(404).json({ message: "Invalid theatre ID" });
         }
@@ -137,42 +137,17 @@ const addshows = async (req, res) => {
         if (!movieData) {
             return res.status(404).json({ message: "movie not found" });
         }
-
-        const newshowtime = { time: new Date(showtimeDate), movie: movieId };
+        const newshowtime = { time: new Date(showtimeDate), name: name, movie: movieId, seats: addSeats(seats) };
         theatreData.showtimes.push(newshowtime);
-        await theatreData.save()
+        await theatreData.save();
+
         res.status(200).json({ message: "shows added successfully" })
 
-
-
-
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'something went wrong' })
+        res.status(500).json({ message: 'something went wrong' });
     }
 };
-
-const deleteShows = async (req, res) => {
-    try {
-        const { theatreId } = req.body;
-        if (!mongoose.Types.ObjectId.isValid(theatreId)) {
-            return res.status(404).json({ message: "Invalid theatre ID" });
-        }
-        const theatre = await THEATRES.findById(theatreId);
-        if (!theatre) {
-            return res.status(404).json({ message: "theatre not found" });
-        }
-
-
-        theatre.showtimes = []
-        await theatre.save();
-        return res.status(200).json({ message: "movie shows removed successfully" });
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'something went wrong' })
-    }
-}
 const addSeats = (seats) => {
     try {
         const totalSeats = [];
@@ -185,6 +160,29 @@ const addSeats = (seats) => {
 
     }
 };
+
+const deleteShows = async (req, res) => {
+    try {
+        const { theatreId } = req.body;
+        if (!mongoose.Types.ObjectId.isValid(theatreId)) {
+            return res.status(404).json({ message: "Invalid theatre ID" });
+        }
+        const theatre = await THEATRES.findById(theatreId);
+        if (!theatre) {
+            return res.status(404).json({ message: "theatre is not found" });
+        }
+
+
+        theatre.showtimes = []
+        await theatre.save();
+        return res.status(200).json({ message: "movie shows removed successfully" });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'something went wrong' })
+    }
+}
+
 const addTheatre = async (req, res) => {
     try {
         const { name, location, movie, seats } = req.body;

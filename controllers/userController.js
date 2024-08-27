@@ -49,6 +49,22 @@ const getSeats = async (req, res) => {
         res.status(500).json({ message: "something went wrong" })
     }
 };
+const getShows=async(req,res)=>{
+    try {
+        const {id}=req.params;
+        const theatre= await THEATRES.findById(id);
+        if(!theatre){
+            return res.status(404).json({message:"theatre is not found"})
+        }
+      console.log(theatre);
+      
+        const showTimes= theatre.showtimes;
+        res.status(200).json({shows:showTimes})
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
 
 const addReviews = (req, res) => {
     try {
@@ -136,4 +152,4 @@ const getReviews = async (req, res) => {
     }
 }
 
-module.exports = { getTheatre, getMovies, getSeats, addReviews, updateReviews, deleteReviews, getReviews }
+module.exports = { getTheatre, getMovies, getSeats,getShows, addReviews, updateReviews, deleteReviews, getReviews }
