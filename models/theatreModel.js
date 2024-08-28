@@ -15,7 +15,7 @@ const seatSchema = mongoose.Schema({
 
 
 const showtimeSchema = mongoose.Schema({
-    time: {
+    date: {
         type: Date,
         required: true,
         index: true
@@ -26,7 +26,7 @@ const showtimeSchema = mongoose.Schema({
         required: true
     },
     seats: [seatSchema],
-    name:{
+    time:{
         type:String
     }
 

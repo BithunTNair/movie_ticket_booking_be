@@ -103,7 +103,7 @@ const deleteMovie = async (req, res) => {
     try {
         console.log('hitted');
 
-        const { id } = req.params.id
+        const { id } = req.params
         const movieData = await MOVIES.findById(id);
 
         if (!movieData) {
@@ -122,26 +122,27 @@ const deleteMovie = async (req, res) => {
 
 const addshows = async (req, res) => {
     try {
-        const { theatreId, movieId, showtimeDate, seats, name } = req.body;
-        if (!mongoose.Types.ObjectId.isValid(theatreId)) {
+        const { id } = req.params;
+        const { movieId, showtimeDate, seats, time } = req.body;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(404).json({ message: "Invalid theatre ID" });
         }
         if (!mongoose.Types.ObjectId.isValid(movieId)) {
             return res.status(404).json({ message: "Invalid movie ID" });
         }
-        const theatreData = await THEATRES.findById(theatreId);
+        const theatreData = await THEATRES.findById(id);
         if (!theatreData) {
-            return res.status(404).json({ message: "theatre not found" });
+            return res.status(404).json({ message: "theatre is not found" });
         }
         const movieData = await MOVIES.findById(movieId);
         if (!movieData) {
-            return res.status(404).json({ message: "movie not found" });
+            return res.status(404).json({ message: "movie is not found" });
         }
-        const newshowtime = { time: new Date(showtimeDate), name: name, movie: movieId, seats: addSeats(seats) };
+        const newshowtime = { date: new Date(showtimeDate), time: time, movie: movieId, seats: addSeats(seats) };
         theatreData.showtimes.push(newshowtime);
         await theatreData.save();
 
-        res.status(200).json({ message: "shows added successfully" })
+        res.status(200).json({ message: "shows added successfully" });
 
     } catch (error) {
         console.log(error);
@@ -161,13 +162,13 @@ const addSeats = (seats) => {
     }
 };
 
-const deleteShows = async (req, res) => {
+const deleteAllShows = async (req, res) => {
     try {
-        const { theatreId } = req.body;
-        if (!mongoose.Types.ObjectId.isValid(theatreId)) {
+        const {id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(404).json({ message: "Invalid theatre ID" });
         }
-        const theatre = await THEATRES.findById(theatreId);
+        const theatre = await THEATRES.findById(id);
         if (!theatre) {
             return res.status(404).json({ message: "theatre is not found" });
         }
@@ -217,4 +218,4 @@ const addTheatre = async (req, res) => {
 
 
 
-module.exports = { addMovie, addshows, deleteShows, addTheatre, addSeats, deleteMovie, updateMovie }
+module.exports = { addMovie, addshows, deleteAllShows, addTheatre, addSeats, deleteMovie, updateMovie }
