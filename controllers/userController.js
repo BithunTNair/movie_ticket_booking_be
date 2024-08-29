@@ -1,6 +1,7 @@
 const REVIEWS = require('../models/reviewModel');
 const MOVIES = require('../models/moviesModel');
 const THEATRES = require('../models/theatreModel');
+const theatres = require('../models/theatreModel');
 
 const getTheatre = async (req, res) => {
     try {
@@ -49,20 +50,48 @@ const getSeats = async (req, res) => {
         res.status(500).json({ message: "something went wrong" })
     }
 };
-const getShows=async(req,res)=>{
+const getAllShows = async (req, res) => {
     try {
-        const {id}=req.params;
-        const theatre= await THEATRES.findById(id);
-        if(!theatre){
-            return res.status(404).json({message:"theatre is not found"})
+        const { id } = req.params;
+        const theatre = await THEATRES.findById(id);
+        if (!theatre) {
+            return res.status(404).json({ message: "theatre is not found" })
         }
-      console.log(theatre);
-      
-        const showTimes= theatre.showtimes;
-        res.status(200).json({shows:showTimes})
+        console.log(theatre);
+
+        const showTimes = theatre.showtimes;
+        res.status(200).json({ shows: showTimes })
     } catch (error) {
         console.log(error);
-        
+
+    }
+}
+
+const getShowsbyDate = async (req, res) => {
+    try {
+        const { showDate } = req.query;
+        if(!showDate){
+            return res.status(404).json({message:"Invalid date"})
+        }
+        const showdate = new Date(new Date(showDate).setUTCHours(0, 0, 0, 0))
+        const shows = await THEATRES.aggregate([
+            { $unwind: '$showtimes' },
+            { $match: { "showtimes.date": showdate } },
+            {
+                $project: {
+                    showTimes: "$showtimes"
+                }
+            }
+        ]);
+        console.log(shows);
+        console.log(showdate);
+
+
+        res.status(200).json({ shows: shows });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "something went wrong" })
     }
 }
 
@@ -152,4 +181,4 @@ const getReviews = async (req, res) => {
     }
 }
 
-module.exports = { getTheatre, getMovies, getSeats,getShows, addReviews, updateReviews, deleteReviews, getReviews }
+module.exports = { getTheatre, getMovies, getSeats, getAllShows, getShowsbyDate, addReviews, updateReviews, deleteReviews, getReviews }
