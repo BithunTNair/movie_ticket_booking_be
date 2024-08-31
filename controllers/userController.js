@@ -2,6 +2,7 @@ const REVIEWS = require('../models/reviewModel');
 const MOVIES = require('../models/moviesModel');
 const THEATRES = require('../models/theatreModel');
 const theatres = require('../models/theatreModel');
+const mongoose = require('mongoose')
 
 const getTheatre = async (req, res) => {
     try {
@@ -50,6 +51,28 @@ const getSeats = async (req, res) => {
         res.status(500).json({ message: "something went wrong" })
     }
 };
+
+const getSeatsbyShow = async (req, res) => {
+    try {
+        const { showsId } = req.params;
+        if (!showsId) {
+            return res.status(404).json({ message: "can not find shows" })
+        }
+        const movieSeats = await THEATRES.aggregate([
+            { $unwind: "$showtimes" },
+            {
+                $match: {
+                    "showtimes._id": new mongoose.Types.ObjectId(showsId)
+                }
+            },
+        ]);
+        res.status(200).json({ movieseats: movieSeats })
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" });
+        console.log(error);
+
+    }
+}
 const getAllShows = async (req, res) => {
     try {
         const { id } = req.params;
@@ -70,8 +93,8 @@ const getAllShows = async (req, res) => {
 const getShowsbyDate = async (req, res) => {
     try {
         const { showDate } = req.query;
-        if(!showDate){
-            return res.status(404).json({message:"Invalid date"})
+        if (!showDate) {
+            return res.status(404).json({ message: "Invalid date" })
         }
         const showdate = new Date(new Date(showDate).setUTCHours(0, 0, 0, 0))
         const shows = await THEATRES.aggregate([
@@ -181,4 +204,4 @@ const getReviews = async (req, res) => {
     }
 }
 
-module.exports = { getTheatre, getMovies, getSeats, getAllShows, getShowsbyDate, addReviews, updateReviews, deleteReviews, getReviews }
+module.exports = { getTheatre, getMovies, getSeats, getSeatsbyShow, getAllShows, getShowsbyDate, addReviews, updateReviews, deleteReviews, getReviews }
