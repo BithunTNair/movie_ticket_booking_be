@@ -13,6 +13,7 @@ dotenv.config()
 var authRouter = require('./routes/authRoutes');
 var usersRouter = require('./routes/usersRoutes');
 var adminRouter = require('./routes/adminRoutes');
+var paymentRouter=require('./routes/paymentRoutes');
 
 database()
 var app = express();
@@ -36,6 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
+app.use('/payments', paymentRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

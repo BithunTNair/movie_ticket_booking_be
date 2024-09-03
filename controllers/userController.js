@@ -54,19 +54,55 @@ const getSeats = async (req, res) => {
 
 const getSeatsbyShow = async (req, res) => {
     try {
-        const { showsId } = req.params;
-        if (!showsId) {
+
+        const { id } = req.params;
+        // console.log(id);
+
+        if (!id) {
             return res.status(404).json({ message: "can not find shows" })
         }
         const movieSeats = await THEATRES.aggregate([
             { $unwind: "$showtimes" },
             {
                 $match: {
-                    "showtimes._id": new mongoose.Types.ObjectId(showsId)
+                    "showtimes._id": new mongoose.Types.ObjectId(id)
                 }
             },
+            {
+                $project: {
+                    getseats: "$showtimes.seats"
+                }
+            }
         ]);
         res.status(200).json({ movieseats: movieSeats })
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" });
+        console.log(error);
+
+    }
+};
+const getMoviebyshow = async (req, res) => {
+    try {
+        const { showId } = req.query;
+    
+
+        if (!showId) {
+            return res.status(404).json({ message: "movie does not find" });
+        }
+        const movieforTheshow = await THEATRES.aggregate([
+            { $unwind: '$showtimes' },
+            {
+                $match: {
+                    'showtimes._id': new mongoose.Types.ObjectId(showId)
+                }
+            },
+            {
+                $project: {
+                    movie: '$showtimes.movie'
+                }
+            }
+        ]);
+        res.status(200).json({ message: movieforTheshow });
     } catch (error) {
         res.status(500).json({ message: "something went wrong" });
         console.log(error);
@@ -92,7 +128,9 @@ const getAllShows = async (req, res) => {
 
 const getShowsbyDate = async (req, res) => {
     try {
+
         const { showDate } = req.query;
+
         if (!showDate) {
             return res.status(404).json({ message: "Invalid date" })
         }
@@ -204,4 +242,4 @@ const getReviews = async (req, res) => {
     }
 }
 
-module.exports = { getTheatre, getMovies, getSeats, getSeatsbyShow, getAllShows, getShowsbyDate, addReviews, updateReviews, deleteReviews, getReviews }
+module.exports = { getTheatre, getMovies, getSeats, getSeatsbyShow, getMoviebyshow, getAllShows, getShowsbyDate, addReviews, updateReviews, deleteReviews, getReviews }
