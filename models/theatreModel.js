@@ -14,6 +14,11 @@ const seatSchema = mongoose.Schema({
     price:{
         type:Number,
         default:100
+    },
+    bookedBy:{
+        type:mongoose.Types.ObjectId,
+        ref:'users',
+        // required:true
     }
 });
 
