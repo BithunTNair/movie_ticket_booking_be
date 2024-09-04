@@ -10,28 +10,29 @@ const orders = async (req, res) => {
             key_id: process.env.RAZORPAY_KEY_ID,
             key_secret: process.env.RAZORPAY_SECRET,
         });
-
-        const options = {
-            amount: 50000,
-            currency: "INR",
-            receipt: "receipt_order_74394",
-        };
+        let totalAmount= 100
         const booking = await  BOOKING({
             showtimeId: showId,
             theatre: theatreId,
             movie: movieId,
             seatNumbers: seats,
             bookedBy: req.userId,
-            totalAmount: 50000
+            totalAmount: totalAmount
 
         }).save()
-        res.status(200).json({ message: "order created successfully", booking })
+
+        const options = {
+            amount: totalAmount*100,
+            currency: "INR",
+            receipt: booking._id,
+        };
+     
 
         const order = await instance.orders.create(options);
 
         if (!order) return res.status(500).send("Some error occured");
 
-        res.json(order);
+        res.status(200).json(order);
     } catch (error) {
         res.status(500).send(error);
         console.log(error);
@@ -42,7 +43,29 @@ const orders = async (req, res) => {
 
 const verify = (req, res) => {
     try {
+        const {
+            orderCreationId,
+            razorpayPaymentId,
+            razorpayOrderId,
+            razorpaySignature,
+            receipt,
+            theatreId,
+            showId,
+            movieId
+        } = req.body;
+        const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET);
 
+        shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
+
+        const digest = shasum.digest("hex");
+        if (digest !== razorpaySignature)
+            return res.status(400).json({ msg: "Transaction not legit!" });
+
+        res.json({
+            msg: "success",
+            orderId: razorpayOrderId,
+            paymentId: razorpayPaymentId,
+        });
     } catch (error) {
         res.status(500).send(error);
     }
