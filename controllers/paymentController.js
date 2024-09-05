@@ -115,7 +115,12 @@ const verify = async (req, res) => {
         await BOOKING.updateOne({ _id: receipt, $set: { status: 2 } })
 
     } catch (error) {
-        res.status(500).send(error);
+        if (!res.headersSent) {
+            res.status(500).json({ message: 'Error occurred', error });
+        } else {
+            console.error('Headers already sent, cannot send another response');
+        }
+        //  res.status(500).send(error);
     }
 };
 
