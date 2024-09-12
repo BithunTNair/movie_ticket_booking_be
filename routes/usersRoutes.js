@@ -18,7 +18,7 @@ router.get('/getshows', userAuth, getAllShows);
 router.get('/getshowsbydate', userAuth, getShowsbyDate);
 router.get('/getreviews', userAuth, getReviews);
 router.post('/addreviews/:id', userAuth, addReviews);
-router.put('/updatereviews', userAuth, updateReviews);
-router.delete('/deletereviews', userAuth, deleteReviews);
+router.put('/updatereviews/:id', userAuth, updateReviews);
+router.delete('/deletereviews/:id', userAuth, deleteReviews);
 
 module.exports = router;

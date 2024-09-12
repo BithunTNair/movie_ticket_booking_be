@@ -2,7 +2,7 @@
 const REVIEWS = require('../models/reviewModel');
 const addReviews = (req, res) => {
     console.log('hitted');
-    
+
     try {
         const { id } = req.params;
         if (!id) {
@@ -37,18 +37,22 @@ const updateReviews = async (req, res) => {
     try {
         console.log('hitted');
 
-
-        const { review, rating } = req.body;
         const { id } = req.params;
-
+        if (!id) {
+            return res.status(404).json({ message: "id did not get" })
+        }
+        const { review, rating } = req.body;
+        if (!review || !rating) {
+            return res.status(404).json({ message: "did not get inputs" })
+        }
 
         const Review = await REVIEWS.findById(id);
 
 
         if (!Review) {
-            res.status(404).json({ message: "not found" })
+            return res.status(404).json({ message: "not found" })
         } else {
-            const updatedReview = await REVIEWS.findByIdAndUpdate('66b48edfb25e900121cd44ef', { review, rating }, { new: true });
+            const updatedReview = await REVIEWS.findByIdAndUpdate(id, { review, rating }, { new: true });
             res.status(200).json({ message: "review updated successfully", updatedReview })
         }
 
@@ -83,7 +87,7 @@ const deleteReviews = async (req, res) => {
 
 const getReviews = async (req, res) => {
     try {
-        const reviews = await REVIEWS.find().populate('user','firstName lastName').exec();
+        const reviews = await REVIEWS.find().populate('user', 'firstName lastName').exec();
         if (!reviews) {
             res.status(404).json({ message: "review is not found" })
         }
