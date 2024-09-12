@@ -1,7 +1,8 @@
 var express = require('express');
 const { userAuth } = require('../middlewares/authorization');
-const { getTheatre, getMovies, getSeats, addReviews, getReviews, updateReviews, deleteReviews, getAllShows, getShowsbyDate, getSeatsbyShow, getMoviebyshow } = require('../controllers/userController');
+const { getTheatre, getMovies, getSeats, getAllShows, getShowsbyDate, getSeatsbyShow, getMoviebyshow } = require('../controllers/userController');
 const { getTheatrebyId, getMoviebyId, getShowtimeById } = require('../controllers/additionalController');
+const { getReviews, addReviews, updateReviews, deleteReviews } = require('../controllers/reviewController');
 var router = express.Router();
 
 
@@ -16,7 +17,7 @@ router.get('/getmoviebyshow',userAuth,  getMoviebyshow);
 router.get('/getshows', userAuth, getAllShows);
 router.get('/getshowsbydate', userAuth, getShowsbyDate);
 router.get('/getreviews', userAuth, getReviews);
-router.post('/addreviews', userAuth, addReviews);
+router.post('/addreviews/:id', userAuth, addReviews);
 router.put('/updatereviews', userAuth, updateReviews);
 router.delete('/deletereviews', userAuth, deleteReviews);
 
