@@ -164,7 +164,7 @@ const addSeats = (seats) => {
 
 const deleteAllShows = async (req, res) => {
     try {
-        const {id } = req.params;
+        const { id } = req.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(404).json({ message: "Invalid theatre ID" });
         }

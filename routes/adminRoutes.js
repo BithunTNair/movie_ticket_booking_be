@@ -8,8 +8,8 @@ var router = express.Router();
 router.post('/addmovie', adminAuth, upload, addMovie);
 router.post('/addtheatre', adminAuth, addTheatre);
 router.post('/addshows/:id',adminAuth, addshows);
-router.delete('/deleteallshows', deleteAllShows);
-router.delete('/deletemovie', adminAuth, deleteMovie);
+router.delete('/deleteallshows/:id',adminAuth, deleteAllShows);
+router.delete('/deletemovie/:id', adminAuth, deleteMovie);
 router.put('/updatemovie', adminAuth, upload, updateMovie);
 
 

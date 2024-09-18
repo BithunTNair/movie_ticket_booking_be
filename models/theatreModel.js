@@ -54,7 +54,7 @@ const theatreSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'movies'
     },
-    // seats: [seatSchema],
+    seats: [seatSchema],
     showtimes: [showtimeSchema],
     createdOn: {
         type: Date,
