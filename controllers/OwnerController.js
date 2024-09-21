@@ -1,4 +1,5 @@
 const THEATRES = require('../models/theatreModel');
+const OWNERS = require('../models/theatreOwnerModel');
 
 
 const addshows = async (req, res) => {
@@ -43,4 +44,14 @@ const addSeats = (seats) => {
     }
 };
 
-module.exports={addshows}
+const getOwners = async (req, res) => {
+    try {
+        const response = await OWNERS.find();
+        res.status(200).json({ owners: response})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'something went wrong' });
+    }
+}
+
+module.exports = { addshows, getOwners }

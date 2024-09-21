@@ -84,7 +84,7 @@ const signin = async (req, res) => {
 const ownersignup = (req, res) => {
 
     try {
-        const { firstName, lastName, email, password, mobileNumber, securityCode} = req.body;
+        const { firstName, lastName, email, password, mobileNumber, securitycode} = req.body;
         bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS), function (err, hash) {
 
             if (err) {
@@ -98,7 +98,7 @@ const ownersignup = (req, res) => {
                 email: email,
                 password: hash,
                 mobileNumber: mobileNumber,
-                securityCode:securityCode
+                securityCode:securitycode
 
 
             }).save().then((response) => {
@@ -142,7 +142,7 @@ const ownersignin = async (req, res) => {
                     }
                     const token = jwt.sign({ ...userData }, process.env.SECRETE_KEY, options);
                     res.cookie('token', token)
-                    res.status(200).json({ owner: userData, token })
+                    res.status(200).json({ user: userData, token })
                 } else {
                     console.log(err);
                     res.status(401).json({ message: 'Invalid credentials' })

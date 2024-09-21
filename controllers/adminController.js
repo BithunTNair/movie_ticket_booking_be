@@ -186,7 +186,7 @@ const deleteAllShows = async (req, res) => {
 
 const addTheatre = async (req, res) => {
     try {
-        const { name, location, movie, seats } = req.body;
+        const { name, location, movie, seats,owner } = req.body;
         if (!mongoose.Types.ObjectId.isValid(movie)) {
             return res.status(404).json({ message: "movieId is not found" })
         }
@@ -201,6 +201,7 @@ const addTheatre = async (req, res) => {
                 name: name,
                 location: location,
                 movie: movie,
+                owner:owner,
                 seats: addSeats(seats)
             }).save()
             res.status(200).json({ message: "theatre is successfully added", theatre })
