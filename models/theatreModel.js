@@ -11,13 +11,13 @@ const seatSchema = mongoose.Schema({
         default: false,
         index: true
     },
-    price:{
-        type:Number,
-        default:100
+    price: {
+        type: Number,
+        default: 100
     },
-    bookedBy:{
-        type:mongoose.Types.ObjectId,
-        ref:'users',
+    bookedBy: {
+        type: mongoose.Types.ObjectId,
+        ref: 'users',
         // required:true
     }
 });
@@ -49,6 +49,11 @@ const theatreSchema = mongoose.Schema({
     },
     location: {
         type: String
+    },
+    owner: {
+        type: mongoose.Types.ObjectId,
+        ref: 'owners',
+        required:true
     },
     movie: {
         type: mongoose.Types.ObjectId,
