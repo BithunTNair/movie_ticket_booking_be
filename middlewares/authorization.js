@@ -4,7 +4,7 @@ const adminAuth = (req, res, next) => {
     try {
         const token = req.headers['authorization'].split(' ')[1];
         jwt.verify(token, process.env.SECRETE_KEY, (err, decodedToken) => {
-            if (!err && decodedToken && decodedToken._doc.role === 1 || decodedToken._doc.role === 2) {
+            if (!err && decodedToken && decodedToken._doc.role === 1) {
                 req.userId = decodedToken._doc._id
                 req.userRole = decodedToken._doc.role
                 next()
@@ -26,9 +26,8 @@ const userAuth = (req, res, next) => {
 
         const token = req.headers['authorization'].split(' ')[1];
         jwt.verify(token, process.env.SECRETE_KEY, (err, decodedToken) => {
-            console.log(decodedToken);
-            
-            if (decodedToken._doc.role === 3 || !err) {
+
+            if (decodedToken || !err) {
                 req.userId = decodedToken._doc._id
                 req.userRole = decodedToken._doc.role
                 next()
@@ -49,7 +48,7 @@ const ownerAuth = (req, res, next) => {
     try {
         const token = req.headers['authorization'].split(' ')[1];
         jwt.verify(token, process.env.SECRETE_KEY, (err, decodedToken) => {
-            if (!err && decodedToken && decodedToken._doc.role === 2) {
+            if (!err && decodedToken && decodedToken._doc.role === 2 || decodedToken._doc.role === 1) {
                 req.userId = decodedToken._doc._id
                 req.userRole = decodedToken._doc.role
                 next()

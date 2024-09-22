@@ -1,5 +1,6 @@
 const MOVIES = require('../models/moviesModel');
-const THEATRES = require('../models/theatreModel')
+const THEATRES = require('../models/theatreModel');
+const USERS=require('../models/userModel')
 const cloudinary = require('cloudinary').v2
 
 const { default: mongoose } = require('mongoose');
@@ -214,9 +215,18 @@ const addTheatre = async (req, res) => {
 
     }
 };
+const getUsers=async(req,res)=>{
+    try {
+       const users=await USERS.find();
+       res.status(200).json({users:users});
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" })
+        console.log(error);
+    }
+}
 
 
 
 
 
-module.exports = { addMovie, addshows, deleteAllShows, addTheatre, addSeats, deleteMovie, updateMovie }
+module.exports = { getUsers,addMovie, addshows, deleteAllShows, addTheatre, addSeats, deleteMovie, updateMovie }

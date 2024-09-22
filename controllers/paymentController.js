@@ -2,7 +2,9 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const BOOKING = require('../models/bookingModel');
 const THEATRES = require('../models/theatreModel');
+const USERS = require('../models/userModel')
 const { default: mongoose } = require('mongoose');
+const { sendBookingConfirmationEmail } = require('./sendEmail');
 
 const orders = async (req, res) => {
     try {
@@ -96,7 +98,6 @@ const verify = async (req, res) => {
             orderId: razorpayOrderId,
             paymentId: razorpayPaymentId,
         });
-
         const update = await THEATRES.updateOne({
             'showtimes._id': showId
         },
@@ -112,7 +113,8 @@ const verify = async (req, res) => {
             ]
         });
 
-        await BOOKING.updateOne({ _id: receipt, $set: { status: 2 } })
+        await BOOKING.updateOne({ _id: receipt, $set: { status: 2 } });
+      
 
     } catch (error) {
         if (!res.headersSent) {
