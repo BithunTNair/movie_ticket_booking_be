@@ -1,6 +1,8 @@
 const MOVIES = require('../models/moviesModel');
 const THEATRES = require('../models/theatreModel');
-const USERS=require('../models/userModel')
+const USERS = require('../models/userModel');
+const OWNERS = require('../models/theatreOwnerModel');
+const REVIEWS = require('../models/reviewModel')
 const cloudinary = require('cloudinary').v2
 
 const { default: mongoose } = require('mongoose');
@@ -187,26 +189,20 @@ const deleteAllShows = async (req, res) => {
 
 const addTheatre = async (req, res) => {
     try {
-        const { name, location, movie, seats,owner } = req.body;
-        if (!mongoose.Types.ObjectId.isValid(movie)) {
-            return res.status(404).json({ message: "movieId is not found" })
-        }
+        const { name, location, seats } = req.body;
+        const { ownerId } = req.query;
+
         if (!seats || seats <= 0) {
             return res.status(400).json({ message: "invalid seat number" })
         }
-        const movieData = await MOVIES.findById(movie);
-        if (!movieData) {
-            return res.status(404).json({ message: "movie is not found" })
-        } else {
-            const theatre = await THEATRES({
-                name: name,
-                location: location,
-                movie: movie,
-                owner:owner,
-                seats: addSeats(seats)
-            }).save()
-            res.status(200).json({ message: "theatre is successfully added", theatre })
-        }
+
+        const theatre = await THEATRES({
+            name: name,
+            location: location,
+            owner: ownerId,
+            seats: addSeats(seats)
+        }).save()
+        res.status(200).json({ message: "theatre is successfully added", theatre })
 
 
     } catch (error) {
@@ -215,10 +211,56 @@ const addTheatre = async (req, res) => {
 
     }
 };
-const getUsers=async(req,res)=>{
+const getUsers = async (req, res) => {
     try {
-       const users=await USERS.find();
-       res.status(200).json({users:users});
+        const users = await USERS.find();
+        res.status(200).json({ users: users });
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" })
+        console.log(error);
+    }
+};
+
+const deleteUser = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) {
+            return res.status(400).json({ message: "user id does not get" })
+        }
+
+        await REVIEWS.deleteMany({ user: userId });
+        await USERS.findByIdAndDelete(userId);
+        res.status(200).json({ message: "user data has been deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" })
+        console.log(error);
+    }
+}
+
+const getowners = async (req, res) => {
+    try {
+        const owners = await OWNERS.find();
+        res.status(200).json({ owners: owners });
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" })
+        console.log(error);
+    }
+};
+
+const deleteOwner = async (req, res) => {
+
+    try {
+        const { ownerId } = req.query;
+
+
+        if (!ownerId) {
+            return res.status(400).json({ message: "owner id does not get" })
+        }
+        const owner = await OWNERS.findByIdAndDelete(ownerId);
+        if (!owner) {
+            return res.status(404).json({ message: "owner data has not been deleted" })
+        }
+        res.status(200).json({ message: "owner data has been deleted successfully" })
     } catch (error) {
         res.status(500).json({ message: "something went wrong" })
         console.log(error);
@@ -227,6 +269,4 @@ const getUsers=async(req,res)=>{
 
 
 
-
-
-module.exports = { getUsers,addMovie, addshows, deleteAllShows, addTheatre, addSeats, deleteMovie, updateMovie }
+module.exports = { getUsers, getowners, addMovie, addshows, deleteAllShows, addTheatre, addSeats, deleteMovie, updateMovie, deleteUser, deleteOwner }

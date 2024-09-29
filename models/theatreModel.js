@@ -55,10 +55,6 @@ const theatreSchema = mongoose.Schema({
         ref: 'owners',
         required:true
     },
-    movie: {
-        type: mongoose.Types.ObjectId,
-        ref: 'movies'
-    },
     seats: [seatSchema],
     showtimes: [showtimeSchema],
     createdOn: {

@@ -114,7 +114,8 @@ const verify = async (req, res) => {
         });
 
         await BOOKING.updateOne({ _id: receipt, $set: { status: 2 } });
-      
+
+
 
     } catch (error) {
         if (!res.headersSent) {
