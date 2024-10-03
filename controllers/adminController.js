@@ -269,4 +269,5 @@ const deleteOwner = async (req, res) => {
 
 
 
+
 module.exports = { getUsers, getowners, addMovie, addshows, deleteAllShows, addTheatre, addSeats, deleteMovie, updateMovie, deleteUser, deleteOwner }

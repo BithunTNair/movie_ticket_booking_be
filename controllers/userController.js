@@ -134,7 +134,11 @@ const getShowsbyDate = async (req, res) => {
         if (!showDate) {
             return res.status(404).json({ message: "Invalid date" })
         }
-        const showdate = new Date(new Date(showDate).setUTCHours(0, 0, 0, 0))
+      
+        const showdate = new Date(new Date(showDate).setUTCHours(0, 0, 0, 0));
+        if(showdate<Date.now()){
+            return res.status(404).json({message:'Date is over'})
+        }
         const shows = await THEATRES.aggregate([
             { $unwind: '$showtimes' },
             { $match: { "showtimes.date": showdate } },
